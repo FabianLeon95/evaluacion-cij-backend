@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -28,7 +29,7 @@ class Club extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name', 'img_path'
     ];
 
     public function answers()
@@ -38,11 +39,28 @@ class Club extends Model
                 $question->id,
                 $question->statement,
                 $question->type,
-                Answer::where('question_id', $question->id)
+                $this->countAnswers(Answer::where('question_id', $question->id)
                     ->where('club_id', $this->id)
-                    ->get()
-                    ->toArray());
+                    ->get(), $question->type)
+            );
         });
         return $questions;
     }
+
+    private function countAnswers(Collection $answers, $type)
+    {
+        switch ($type) {
+            case 'stars':
+                return [
+                    '1 estrella' => $answers->where('stars', '1')->count(),
+                    '2 estrellas' => $answers->where('stars', '2')->count(),
+                    '3 estrellas' => $answers->where('stars', '3')->count(),
+                    '4 estrellas' => $answers->where('stars', '4')->count(),
+                    '5 estrellas' => $answers->where('stars', '5')->count(),
+                ];
+            default:
+                return $answers;
+        }
+    }
+
 }

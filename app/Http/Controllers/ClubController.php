@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Club as ClubResource;
 use App\Models\Club;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ClubController extends Controller
 {
@@ -26,7 +28,15 @@ class ClubController extends Controller
      */
     public function store(Request $request)
     {
-        $club = Club::create($request->all());
+
+        $file = $request->file('image');
+        $fileName = Str::slug($request->name, '_') . '_img_' . time() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('public/images', $fileName);
+
+        $club = Club::create([
+            'name' => $request->name,
+            'img_path' => Storage::url($path)
+        ]);
 
         return new ClubResource($club);
     }
@@ -78,6 +88,6 @@ class ClubController extends Controller
      */
     public function answers(Club $club)
     {
-        return response()->json(['data'=>$club->answers()]);
+        return response()->json(['data' => $club->answers()]);
     }
 }

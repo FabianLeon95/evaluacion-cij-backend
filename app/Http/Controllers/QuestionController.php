@@ -6,6 +6,7 @@ use App\Http\Requests\QuestionRequest;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Resources\Question as QuestionResource;
+use Symfony\Component\Console\Input\Input;
 
 class QuestionController extends Controller
 {
@@ -14,9 +15,13 @@ class QuestionController extends Controller
      *
      * @return QuestionResource
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new QuestionResource(Question::all());
+        $type = $request->type;
+
+        return $type
+            ? new QuestionResource(Question::where('type', $type)->get())
+            : new QuestionResource(Question::all());
     }
 
     /**
