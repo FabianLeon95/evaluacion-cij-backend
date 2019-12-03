@@ -25,10 +25,11 @@ Route::fallback(function(){
     return response()->json(['message' => 'Not Found'], 404);
 });
 
-Route::apiResource('questions','QuestionController');
+Route::apiResource('questions','QuestionController')->middleware('auth:api');
 Route::apiResource('clubs','ClubController');
 Route::get('clubs/{club}/answers', 'ClubController@answers')->name('clubs.answers');
 Route::apiResource('answer','AnswerController')->except('index', 'update');
+Route::get('answer/club/{club}/question/{question}', 'AnswerController@getQuestionAnswersByClub');
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'AuthController@login');

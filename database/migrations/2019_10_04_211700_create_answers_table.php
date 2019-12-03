@@ -20,6 +20,7 @@ class CreateAnswersTable extends Migration
             $table->tinyInteger('stars')->nullable();
             $table->boolean('response')->nullable();
             $table->string('text')->nullable();
+            $table->string('audio_path')->nullable();
             $table->timestamps();
 
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');

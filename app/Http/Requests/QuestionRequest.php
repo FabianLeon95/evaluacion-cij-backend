@@ -30,7 +30,7 @@ class QuestionRequest extends FormRequest
     {
         return [
             'statement' => 'required',
-            'type' => [Rule::in(['stars', 'text', 'yes_no'])]
+            'type' => [Rule::in(['stars', 'text', 'yesNo'])]
         ];
     }
 

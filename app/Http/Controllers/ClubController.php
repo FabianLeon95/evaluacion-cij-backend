@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Club as ClubResource;
 use App\Models\Club;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -28,7 +29,6 @@ class ClubController extends Controller
      */
     public function store(Request $request)
     {
-
         $file = $request->file('image');
         $fileName = Str::slug($request->name, '_') . '_img_' . time() . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('public/images', $fileName);
@@ -61,7 +61,20 @@ class ClubController extends Controller
      */
     public function update(Request $request, Club $club)
     {
-        $club->update($request->all());
+        if ($request->file('image')) {
+            $file = $request->file('image');
+            $fileName = Str::slug($request->name, '_') . '_img_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/images', $fileName);
+            File::delete(public_path() . $club->img_path);
+            $club->update([
+                'name' => $request->name,
+                'img_path' => Storage::url($path)
+            ]);
+        } else {
+            $club->update([
+                'name' => $request->name,
+            ]);
+        }
 
         return new ClubResource($club);
 
@@ -76,6 +89,7 @@ class ClubController extends Controller
      */
     public function destroy(Club $club)
     {
+        File::delete(public_path() . $club->img_path);
         $club->delete();
 
         return new ClubResource($club);
