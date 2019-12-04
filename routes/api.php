@@ -30,6 +30,7 @@ Route::apiResource('clubs','ClubController');
 Route::get('clubs/{club}/answers', 'ClubController@answers')->name('clubs.answers');
 Route::apiResource('answer','AnswerController')->except('index', 'update');
 Route::get('answer/club/{club}/question/{question}', 'AnswerController@getQuestionAnswersByClub');
+Route::get('answer/club/{club}/average', 'AnswerController@getClubAnswersAverage');
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'AuthController@login');

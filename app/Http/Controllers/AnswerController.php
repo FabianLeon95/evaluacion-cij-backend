@@ -8,6 +8,7 @@ use App\Models\Club;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,5 +79,13 @@ class AnswerController extends Controller
                 ]);
             })
             ->get();
+    }
+
+    public function getClubAnswersAverage(Club $club) {
+        return Answer::where('club_id', $club->id)
+            ->join('questions', 'answers.question_id', '=', 'questions.id')
+            ->where('questions.type', '=', 'stars')->select(DB::raw('count(answers.id) as answers, avg(answers.stars) as stars_avg'))
+            ->get()
+            ->pop();
     }
 }
