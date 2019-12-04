@@ -81,10 +81,17 @@ class AnswerController extends Controller
             ->get();
     }
 
-    public function getClubAnswersAverage(Club $club) {
+    public function getClubAnswersAverage(Request $request, Club $club)
+    {
         return Answer::where('club_id', $club->id)
             ->join('questions', 'answers.question_id', '=', 'questions.id')
             ->where('questions.type', '=', 'stars')->select(DB::raw('count(answers.id) as answers, avg(answers.stars) as stars_avg'))
+            ->when($request->start_date && $request->end_date, function ($query) use ($request) {
+                return $query->whereBetween('answers.created_at', [
+                    Carbon::parse($request->start_date)->format('Y-m-d'),
+                    Carbon::parse($request->end_date)->format('Y-m-d')
+                ]);
+            })
             ->get()
             ->pop();
     }
