@@ -6,10 +6,17 @@ use App\Http\Requests\QuestionRequest;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Resources\Question as QuestionResource;
-use Symfony\Component\Console\Input\Input;
 
 class QuestionController extends Controller
 {
+    /**
+     * QuestionController constructor.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except('index', 'show');
+    }
+
     /**
      * Display a listing of the resource.
      *

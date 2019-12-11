@@ -12,6 +12,14 @@ use Illuminate\Support\Str;
 class ClubController extends Controller
 {
     /**
+     * ClubController constructor.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except('index', 'show');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return ClubResource

@@ -21,22 +21,22 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::fallback(function(){
+Route::fallback(function () {
     return response()->json(['message' => 'Not Found'], 404);
 });
 
-Route::apiResource('questions','QuestionController')->middleware('auth:api');
-Route::apiResource('clubs','ClubController');
-Route::get('clubs/{club}/answers', 'ClubController@answers')->name('clubs.answers');
-Route::apiResource('answer','AnswerController')->except('index', 'update');
-Route::get('answer/club/{club}/question/{question}', 'AnswerController@getQuestionAnswersByClub');
-Route::get('answer/club/{club}/average', 'AnswerController@getClubAnswersAverage');
+Route::apiResource('questions', 'QuestionController');
+Route::apiResource('clubs', 'ClubController');
+Route::get('clubs/{club}/answers', 'ClubController@answers')->name('clubs.answers')->middleware('auth:api');
+Route::apiResource('answer', 'AnswerController')->except('index', 'update')->middleware('auth:api');
+Route::get('answer/club/{club}/question/{question}', 'AnswerController@getQuestionAnswersByClub')->middleware('auth:api');
+Route::get('answer/club/{club}/average', 'AnswerController@getClubAnswersAverage')->middleware('auth:api');
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'AuthController@login');
     Route::post('signup', 'AuthController@signup');
 
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::group(['middleware' => 'auth:api'], function () {
         Route::get('logout', 'AuthController@logout');
         Route::get('user', 'AuthController@user');
     });
