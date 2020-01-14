@@ -28,7 +28,7 @@ Route::fallback(function () {
 Route::apiResource('questions', 'QuestionController');
 Route::apiResource('clubs', 'ClubController');
 Route::get('clubs/{club}/answers', 'ClubController@answers')->name('clubs.answers')->middleware('auth:api');
-Route::apiResource('answer', 'AnswerController')->except('index', 'update')->middleware('auth:api');
+Route::apiResource('answer', 'AnswerController')->except('index', 'update');
 Route::get('answer/club/{club}/question/{question}', 'AnswerController@getQuestionAnswersByClub')->middleware('auth:api');
 Route::get('answer/club/{club}/average', 'AnswerController@getClubAnswersAverage')->middleware('auth:api');
 

@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Storage;
 
 class AnswerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except('store');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
